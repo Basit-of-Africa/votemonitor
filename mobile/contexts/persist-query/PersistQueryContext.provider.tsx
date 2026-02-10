@@ -2,6 +2,7 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { MutationCache, QueryClient } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
@@ -78,17 +79,19 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   // console.log("isRestoring persistQueryClient", isRestoring);
   const { isAuthenticated } = useAuth();
 
-  queryClient.setMutationDefaults(["upsertPollingStationGeneralInformation"], {
-    mutationFn: (payload: API.PollingStationInformationAPIPayload) => {
-      return API.upsertPollingStationGeneralInformation(payload);
-    },
-  });
+  useEffect(() => {
+    queryClient.setMutationDefaults(["upsertPollingStationGeneralInformation"], {
+      mutationFn: (payload: API.PollingStationInformationAPIPayload) => {
+        return API.upsertPollingStationGeneralInformation(payload);
+      },
+    });
 
-  queryClient.setMutationDefaults(pollingStationsKeys.addAttachmentMutation(), {
-    mutationFn: async (payload: API.AddAttachmentAPIPayload) => {
-      return performanceLog(() => API.addAttachment(payload));
-    },
-  });
+    queryClient.setMutationDefaults(pollingStationsKeys.addAttachmentMutation(), {
+      mutationFn: async (payload: API.AddAttachmentAPIPayload) => {
+        return performanceLog(() => API.addAttachment(payload));
+      },
+    });
+  }, []);
 
   if (!isAuthenticated) {
     return children;

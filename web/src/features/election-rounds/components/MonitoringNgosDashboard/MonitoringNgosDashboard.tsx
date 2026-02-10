@@ -100,7 +100,14 @@ function MonitoringNgosDashboard({ electionRoundId }: MonitoringNgosDashboardPro
         description: 'Removed monitoring NGO',
       });
     },
-    //TODO Add error handling
+    onError: (error: unknown) => {
+      const message = error instanceof Error ? error.message : 'Unable to remove monitoring NGO.';
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      });
+    },
   });
 
   const monitoringNgosColDefs: ColumnDef<MonitoringNgoModel>[] = [

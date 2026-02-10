@@ -52,7 +52,14 @@ function AddMonitoringNgoDialog({ open, onOpenChange, electionRoundId }: AddMoni
         description: 'Added monitoring NGO',
       });
     },
-    //TODO Add error handling
+    onError: (error: unknown) => {
+      const message = error instanceof Error ? error.message : 'Unable to add monitoring NGO.';
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      });
+    },
   });
 
   const monitoringNgosColDefs: ColumnDef<MonitoringNgoModel>[] = [
